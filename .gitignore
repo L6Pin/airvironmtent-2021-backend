@@ -1,5 +1,4 @@
-*.txt
-.DS_Store 
+.DS_Store
 *.pyc
 .env
 .venv

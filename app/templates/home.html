@@ -11,7 +11,10 @@
 <u> Lorem Ipsum </u>
 </br></br>
 {% for temp in klimaInfo %}
-Temperatura je {{ temp.temp }}
+Vlaznost je {{ temp.humidity }}
+Temperatura je {{ temp.temperature }}
+Zagadjenost je {{ temp.pollution }}
+Kreiran {{ temp.created }}
 </br>
 {% endfor %}
 

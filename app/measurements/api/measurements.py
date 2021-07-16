@@ -6,16 +6,17 @@ import json
 from flask import request
 from app.measurements.constants import PAGE, PER_PAGE
 from werkzeug.exceptions import NotFound
-from app.measurements.schema import MeasurementResponseSchema, MeasurementPostSchema, MeasurementPutSchema, MeasurementPatchSchema
+from app.measurements.schema import MeasurementResponseSchema, MeasurementPostSchema, MeasurementPutSchema, \
+    MeasurementPatchSchema, MeasurementPaginationSchema
 
 measurement_response_schema = MeasurementResponseSchema()
-measurement_collection_response_schema = MeasurementResponseSchema(many=True)
+measurement_collection_response_schema = MeasurementPaginationSchema()
 measurement_post_schema = MeasurementPostSchema()
 measurement_collection_post_schema = MeasurementPostSchema(many=True)
 measurement_put_schema = MeasurementPutSchema()
 measurement_collection_put_schema = MeasurementPutSchema(many=True)
 measurement_patch_schema = MeasurementPatchSchema()
-measurement_collection_patch_schema = MeasurementPatchSchema(many=True)
+
 
 
 @measurement_bp.get('')
@@ -23,24 +24,24 @@ def get_all():
     page = int(request.args.get("page", PAGE))
     per_page = int(request.args.get("per_page", PER_PAGE))
 
-
-
     measurements = db.session.query(Measurement).paginate(page=page, per_page=per_page)
-    response = {"meta": {"total":measurements.total,
-                         "page":measurements.page,
-                         "per_page":measurements.per_page},
-                "results": []}
-
-    for measurement in measurements.items:
-        data = {
-            "id": measurement.id,
-            "humidity": measurement.humidity,
-            "pollution": measurement.pollution,
-            "temperature": measurement.temperature
-        }
-        response['results'].append(data)
-
-    return json.dumps(response)
+    return measurement_collection_response_schema.dump(measurements)
+    # measurements = db.session.query(Measurement).paginate(page=page, per_page=per_page)
+    # response = {"meta": {"total": measurements.total,
+    #                      "page": measurements.page,
+    #                      "per_page": measurements.per_page},
+    #             "results": []}
+    #
+    # for measurement in measurements.items:
+    #     data = {
+    #         "id": measurement.id,
+    #         "humidity": measurement.humidity,
+    #         "pollution": measurement.pollution,
+    #         "temperature": measurement.temperature
+    #     }
+    #     response['results'].append(data)
+    #
+    # return json.dumps(response)
 
 
 @measurement_bp.get("/<int:id>")

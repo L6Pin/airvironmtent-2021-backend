@@ -63,5 +63,5 @@ class MeasurementPaginationSchema(Schema):
         return MeasurementMetaSchema().dump(response)
 
     @staticmethod
-    def get_result():
+    def get_results(data):
         return MeasurementResponseSchema(many=True).dump(data.items)
